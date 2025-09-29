@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search Routes - VoiceRoute</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Background Elements -->
+    <div class="bg-overlay"></div>
+    <div class="bg-particles">
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="navbar glass-morphism">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <i class="fas fa-microphone-alt brand-icon"></i>
+                <span class="brand-text">VoiceRoute</span>
+            </div>
+            <div class="nav-menu" id="nav-menu">
+                <a href="index.html" class="nav-link">Home</a>
+                <a href="search.html" class="nav-link active">Search</a>
+                <a href="#favorites" class="nav-link">Favorites</a>
+                <a href="#history" class="nav-link">History</a>
+                <div class="user-nav-info" id="userNavInfo" style="display: none;">
+                    <div class="user-avatar">
+                        <i class="fas fa-user-circle"></i>
+                    </div>
+                    <span class="user-name" id="navUserName">User</span>
+                    <button class="nav-logout-btn" onclick="logout()">
+                        <i class="fas fa-sign-out-alt"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="hamburger" id="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Search Page Content -->
+    <main class="search-page">
+        <div class="container">
+            <!-- Page Header -->
+            <div class="page-header">
+                <h1 class="page-title">
+                    <i class="fas fa-search"></i>
+                    Find Your Perfect Route
+                </h1>
+                <p class="page-subtitle">Search for trains and buses across India with real-time availability and smart recommendations</p>
+            </div>
+
+            <!-- Search Form Section -->
+            <section class="search-form-section">
+                <div class="search-form-container glass-morphism">
+                    <form class="route-search-form" id="routeSearchForm">
+                        <!-- Transport Type Selection -->
+                        <div class="transport-type-selector">
+                            <div class="transport-option active" data-type="both">
+                                <i class="fas fa-route"></i>
+                                <span>All Modes</span>
+                            </div>
+                            <div class="transport-option" data-type="train">
+                                <i class="fas fa-train"></i>
+                                <span>Trains</span>
+                            </div>
+                            <div class="transport-option" data-type="bus">
+                                <i class="fas fa-bus"></i>
+                                <span>Buses</span>
+                            </div>
+                        </div>
+
+                        <!-- Location and Date Selection -->
+                        <div class="search-main-fields">
+                            <div class="location-fields">
+                                <div class="location-input-group">
+                                    <div class="form-group">
+                                        <label for="fromLocation">
+                                            <i class="fas fa-map-marker-alt from-icon"></i>
+                                            From
+                                        </label>
+                                        <div class="location-input-wrapper">
+                                            <input type="text" id="fromLocation" name="from_location" required
+                                                   placeholder="Enter departure city or station"
+                                                   autocomplete="off">
+                                            <div class="location-suggestions" id="fromSuggestions"></div>
+                                        </div>
+                                    </div>
+
+                                    <button type="button" class="swap-locations-btn" onclick="swapLocations()">
+                                        <i class="fas fa-exchange-alt"></i>
+                                    </button>
+
+                                    <div class="form-group">
+                                        <label for="toLocation">
+                                            <i class="fas fa-map-marker-alt to-icon"></i>
+                                            To
+                                        </label>
+                                        <div class="location-input-wrapper">
+                                            <input type="text" id="toLocation" name="to_location" required
+                                                   placeholder="Enter destination city or station"
+                                                   autocomplete="off">
+                                            <div class="location-suggestions" id="toSuggestions"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="date-passenger-fields">
+                                <div class="form-group">
+                                    <label for="travelDate">
+                                        <i class="fas fa-calendar-alt"></i>
+                                        Travel Date
+                                    </label>
+                                    <input type="date" id="travelDate" name="travel_date" required>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="passengerCount">
+                                        <i class="fas fa-users"></i>
+                                        Passengers
+                                    </label>
+                                    <select id="passengerCount" name="passenger_count">
+                                        <option value="1">1 Passenger</option>
+                                        <option value="2">2 Passengers</option>
+                                        <option value="3">3 Passengers</option>
+                                        <option value="4">4 Passengers</option>
+                                        <option value="5">5+ Passengers</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Advanced Filters (Collapsible) -->
+                        <div class="advanced-filters">
+                            <button type="button" class="filters-toggle" onclick="toggleAdvancedFilters()">
+                                <i class="fas fa-sliders-h"></i>
+                                Advanced Filters
+                                <i class="fas fa-chevron-down toggle-icon"></i>
+                            </button>
+
+                            <div class="filters-content" id="advancedFiltersContent">
+                                <div class="filters-grid">
+                                    <!-- Time Preferences -->
+                                    <div class="filter-group">
+                                        <label class="filter-group-label">
+                                            <i class="fas fa-clock"></i>
+                                            Departure Time
+                                        </label>
+                                        <div class="time-slots">
+                                            <label class="time-slot-option">
+                                                <input type="checkbox" name="departure_time" value="early_morning">
+                                                <span class="time-slot">
+                                                    <i class="fas fa-sun"></i>
+                                                    Early Morning<br>
+                                                    <small>4:00 - 8:00 AM</small>
+                                                </span>
+                                            </label>
+                                            <label class="time-slot-option">
+                                                <input type="checkbox" name="departure_time" value="morning">
+                                                <span class="time-slot">
+                                                    <i class="fas fa-cloud-sun"></i>
+                                                    Morning<br>
+                                                    <small>8:00 - 12:00 PM</small>
+                                                </span>
+                                            </label>
+                                            <label class="time-slot-option">
+                                                <input type="checkbox" name="departure_time" value="afternoon">
+                                                <span class="time-slot">
+                                                    <i class="fas fa-sun"></i>
+                                                    Afternoon<br>
+                                                    <small>12:00 - 6:00 PM</small>
+                                                </span>
+                                            </label>
+                                            <label class="time-slot-option">
+                                                <input type="checkbox" name="departure_time" value="evening">
+                                                <span class="time-slot">
+                                                    <i class="fas fa-moon"></i>
+                                                    Evening<br>
+                                                    <small>6:00 - 11:00 PM</small>
+                                                </span>
+                                            </label>
+                                            <label class="time-slot-option">
+                                                <input type="checkbox" name="departure_time" value="night">
+                                                <span class="time-slot">
+                                                    <i class="fas fa-star"></i>
+                                                    Night<br>
+                                                    <small>11:00 PM - 4:00 AM</small>
+                                                </span>
+                                            </label>
+                                        </div>
+                                    </div>
+
+                                    <!-- Class/Seat Preferences -->
+                                    <div class="filter-group">
+                                        <label class="filter-group-label">
+                                            <i class="fas fa-chair"></i>
+                                            Class Preferences
+                                        </label>
+                                        <div class="class-options">
+                                            <label class="class-option">
+                                                <input type="checkbox" name="class_preference" value="general">
+                                                <span class="class-label">
+                                                    <i class="fas fa-users"></i>
+                                                    General/Ordinary
+                                                </span>
+                                            </label>
+                                            <label class="class-option">
+                                                <input type="checkbox" name="class_preference" value="sleeper">
+                                                <span class="class-label">
+                                                    <i class="fas fa-bed"></i>
+                                                    Sleeper/Semi-Sleeper
+                                                </span>
+                                            </label>
+                                            <label class="class-option">
+                                                <input type="checkbox" name="class_preference" value="ac">
+                                                <span class="class-label">
+                                                    <i class="fas fa-snowflake"></i>
+                                                    AC Coach
+                                                </span>
+                                            </label>
+                                            <label class="class-option">
+                                                <input type="checkbox" name="class_preference" value="premium">
+                                                <span class="class-label">
+                                                    <i class="fas fa-crown"></i>
+                                                    Premium/Executive
+                                                </span>
+                                            </label>
+                                        </div>
+                                    </div>
+
+                                    <!-- Price Range -->
+                                    <div class="filter-group">
+                                        <label class="filter-group-label">
+                                            <i class="fas fa-rupee-sign"></i>
+                                            Price Range
+                                        </label>
+                                        <div class="price-range-container">
+                                            <input type="range" id="priceRange" name="price_range" 
+                                                   min="0" max="5000" value="2500" step="100">
+                                            <div class="price-range-display">
+                                                <span>₹0</span>
+                                                <span class="current-price">₹2,500</span>
+                                                <span>₹5,000+</span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Duration Preference -->
+                                    <div class="filter-group">
+                                        <label class="filter-group-label">
+                                            <i class="fas fa-hourglass-half"></i>
+                                            Journey Duration
+                                        </label>
+                                        <div class="duration-options">
+                                            <label class="duration-option">
+                                                <input type="radio" name="duration_preference" value="shortest">
+                                                <span>Shortest Duration</span>
+                                            </label>
+                                            <label class="duration-option">
+                                                <input type="radio" name="duration_preference" value="balanced" checked>
+                                                <span>Balanced (Time + Price)</span>
+                                            </label>
+                                            <label class="duration-option">
+                                                <input type="radio" name="duration_preference" value="comfortable">
+                                                <span>Most Comfortable</span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Search Actions -->
+                        <div class="search-actions">
+                            <button type="button" class="voice-search-btn" onclick="startVoiceSearch()">
+                                <i class="fas fa-microphone"></i>
+                                Voice Search
+                            </button>
+                            <button type="submit" class="search-submit-btn">
+                                <i class="fas fa-search"></i>
+                                Search Routes
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </section>
+
+            <!-- Quick Search Options -->
+            <section class="quick-search-section">
+                <h2 class="section-title">Quick Searches</h2>
+                <div class="quick-search-grid">
+                    <button class="quick-search-card glass-morphism" onclick="fillQuickSearch('Delhi', 'Mumbai', 'train')">
+                        <div class="quick-search-icon">
+                            <i class="fas fa-train"></i>
+                        </div>
+                        <div class="quick-search-info">
+                            <h3>Delhi → Mumbai</h3>
+                            <p>Popular train route</p>
+                        </div>
+                    </button>
+
+                    <button class="quick-search-card glass-morphism" onclick="fillQuickSearch('Bangalore', 'Chennai', 'both')">
+                        <div class="quick-search-icon">
+                            <i class="fas fa-route"></i>
+                        </div>
+                        <div class="quick-search-info">
+                            <h3>Bangalore → Chennai</h3>
+                            <p>All transport modes</p>
+                        </div>
+                    </button>
+
+                    <button class="quick-search-card glass-morphism" onclick="fillQuickSearch('Mumbai', 'Pune', 'bus')">
+                        <div class="quick-search-icon">
+                            <i class="fas fa-bus"></i>
+                        </div>
+                        <div class="quick-search-info">
+                            <h3>Mumbai → Pune</h3>
+                            <p>Express bus services</p>
+                        </div>
+                    </button>
+
+                    <button class="quick-search-card glass-morphism" onclick="fillQuickSearch('Delhi', 'Jaipur', 'both')">
+                        <div class="quick-search-icon">
+                            <i class="fas fa-map-marked-alt"></i>
+                        </div>
+                        <div class="quick-search-info">
+                            <h3>Delhi → Jaipur</h3>
+                            <p>Golden Triangle route</p>
+                        </div>
+                    </button>
+                </div>
+            </section>
+
+            <!-- Search Results Section -->
+            <section class="search-results-section" id="searchResultsSection" style="display: none;">
+                <div class="results-header">
+                    <h2 class="results-title">
+                        <i class="fas fa-list"></i>
+                        Search Results
+                        <span class="results-count" id="resultsCount">0 routes found</span>
+                    </h2>
+                    <div class="sort-controls">
+                        <label for="sortBy">Sort by:</label>
+                        <select id="sortBy" name="sort_by">
+                            <option value="departure_time">Departure Time</option>
+                            <option value="duration">Duration</option>
+                            <option value="price">Price (Low to High)</option>
+                            <option value="price_desc">Price (High to Low)</option>
+                            <option value="rating">Rating</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="results-container" id="resultsContainer">
+                    <!-- Search results will be populated here -->
+                </div>
+
+                <div class="load-more-container" id="loadMoreContainer" style="display: none;">
+                    <button class="load-more-btn" onclick="loadMoreResults()">
+                        <i class="fas fa-plus"></i>
+                        Load More Results
+                    </button>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Loading Overlay -->
+    <div class="search-loading-overlay" id="searchLoadingOverlay" style="display: none;">
+        <div class="loading-content glass-morphism">
+            <div class="loading-spinner">
+                <div class="spinner"></div>
+            </div>
+            <h3>Searching for routes...</h3>
+            <p>Finding the best transportation options for your journey</p>
+            <div class="loading-progress">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+                <span class="progress-text" id="progressText">Initializing search...</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- No Results Found -->
+    <div class="no-results-container" id="noResultsContainer" style="display: none;">
+        <div class="no-results-content glass-morphism">
+            <div class="no-results-icon">
+                <i class="fas fa-search-minus"></i>
+            </div>
+            <h3>No Routes Found</h3>
+            <p>We couldn't find any routes matching your search criteria. Try adjusting your filters or search parameters.</p>
+            <div class="no-results-suggestions">
+                <h4>Suggestions:</h4>
+                <ul>
+                    <li>Check your departure and destination cities</li>
+                    <li>Try selecting a different travel date</li>
+                    <li>Remove some advanced filters</li>
+                    <li>Consider both trains and buses</li>
+                </ul>
+            </div>
+            <button class="retry-search-btn" onclick="clearAndRetrySearch()">
+                <i class="fas fa-redo"></i>
+                Start New Search
+            </button>
+        </div>
+    </div>
+
+    <!-- Voice Search Modal -->
+    <div class="voice-search-modal" id="voiceSearchModal" style="display: none;">
+        <div class="voice-modal-overlay" onclick="closeVoiceSearch()"></div>
+        <div class="voice-modal-content glass-morphism">
+            <button class="voice-close-btn" onclick="closeVoiceSearch()">
+                <i class="fas fa-times"></i>
+            </button>
+            <div class="voice-search-content">
+                <div class="voice-animation">
+                    <div class="voice-circle"></div>
+                    <div class="voice-bars">
+                        <div class="voice-bar"></div>
+                        <div class="voice-bar"></div>
+                        <div class="voice-bar"></div>
+                        <div class="voice-bar"></div>
+                        <div class="voice-bar"></div>
+                    </div>
+                </div>
+                <h3>Voice Search Active</h3>
+                <p class="voice-status" id="voiceStatus">Say something like "Find trains from Delhi to Mumbai tomorrow"</p>
+                <button class="stop-voice-btn" onclick="stopVoiceSearch()">
+                    <i class="fas fa-stop"></i>
+                    Stop Listening
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="search.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>

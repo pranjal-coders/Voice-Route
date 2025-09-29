@@ -1,0 +1,817 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>VoiceRoute - AI-Powered Voice Transportation Enquiry</title>
+    <link rel="stylesheet" href="styles.css" />
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <!-- Background Elements -->
+    <div class="bg-overlay"></div>
+    <div class="bg-particles">
+      <div class="particle"></div>
+      <div class="particle"></div>
+      <div class="particle"></div>
+      <div class="particle"></div>
+      <div class="particle"></div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="navbar glass-morphism">
+      <div class="nav-container">
+        <div class="nav-brand">
+            <i class="fas fa-microphone-alt brand-icon"></i>
+            <span class="brand-text">VoiceRoute</span>
+        </div>
+        <div class="nav-menu" id="nav-menu">
+            <a href="#home" class="nav-link active">Home</a>
+            <a href="#about" class="nav-link">About</a>
+            <a href="#services" class="nav-link">Services</a>
+            <a href="#contact" class="nav-link">Contact</a>
+            <button class="nav-cta" id="searchNavLink">
+                <i class="fas fa-search"></i> Dashboard
+            </button>
+            <button class="nav-cta" id="voiceChatNavLink" onclick="openVoiceChat()">
+              <i class="fas fa-comments"></i> Voice Chat
+            </button>
+            <button class="nav-auth-btn" id="loginBtn">Sign In</button>
+            <button class="nav-cta" id="registerBtn">Get Started</button>
+            <!-- User info (shown when logged in) -->
+            <div class="user-nav-info" id="userNavInfo" style="display: none;">
+                <div class="user-avatar">
+                    <i class="fas fa-user-circle"></i>
+                </div>
+                <span class="user-name" id="navUserName">User</span>
+                <button class="nav-logout-btn" onclick="logout()">
+                    <i class="fas fa-sign-out-alt"></i>
+                </button>
+            </div>
+        </div>
+        <div class="hamburger" id="hamburger">
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+      </div>
+    </nav>
+
+
+    <!-- Authentication Modal -->
+    <div class="auth-modal" id="authModal">
+      <div class="auth-modal-overlay" id="authModalOverlay"></div>
+      <div class="auth-modal-container glass-morphism">
+        <button class="auth-close-btn" id="authCloseBtn">
+          <i class="fas fa-times"></i>
+        </button>
+
+        <!-- Login Form -->
+        <div class="auth-form" id="loginForm">
+          <div class="auth-header">
+            <h2>Welcome Back</h2>
+            <p>Sign in to access your personalized travel experience</p>
+          </div>
+          <form class="form-container" id="loginFormElement">
+            <div class="form-group">
+              <label for="loginEmail">
+                <i class="fas fa-envelope"></i>
+                Email Address
+              </label>
+              <input
+                type="email"
+                id="loginEmail"
+                name="email"
+                required
+                placeholder="Enter your email address"
+              />
+            </div>
+            <div class="form-group">
+              <label for="loginPassword">
+                <i class="fas fa-lock"></i>
+                Password
+              </label>
+              <div class="password-input">
+                <input
+                  type="password"
+                  id="loginPassword"
+                  name="password"
+                  required
+                  placeholder="Enter your password"
+                />
+                <button
+                  type="button"
+                  class="password-toggle"
+                  onclick="togglePassword('loginPassword')"
+                >
+                  <i class="fas fa-eye"></i>
+                </button>
+              </div>
+            </div>
+            <button type="submit" class="auth-submit-btn">
+              <i class="fas fa-sign-in-alt"></i>
+              Sign In
+            </button>
+          </form>
+          <div class="auth-footer">
+            <p>
+              Don't have an account?
+              <button
+                class="auth-switch-btn"
+                onclick="switchAuthMode('register')"
+              >
+                Create Account
+              </button>
+            </p>
+          </div>
+        </div>
+
+        <!-- Registration Form -->
+        <div class="auth-form" id="registerForm" style="display: none">
+          <div class="auth-header">
+            <h2>Join VoiceRoute</h2>
+            <p>Create your account and discover smarter travel planning</p>
+          </div>
+          <form class="form-container" id="registerFormElement">
+            <div class="form-row">
+              <div class="form-group">
+                <label for="registerFullName">
+                  <i class="fas fa-user"></i>
+                  Full Name
+                </label>
+                <input
+                  type="text"
+                  id="registerFullName"
+                  name="full_name"
+                  required
+                  placeholder="Enter your full name"
+                />
+              </div>
+              <div class="form-group">
+                <label for="registerUsername">
+                  <i class="fas fa-at"></i>
+                  Username
+                </label>
+                <input
+                  type="text"
+                  id="registerUsername"
+                  name="username"
+                  required
+                  placeholder="Choose a username"
+                />
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="registerEmail">
+                <i class="fas fa-envelope"></i>
+                Email Address
+              </label>
+              <input
+                type="email"
+                id="registerEmail"
+                name="email"
+                required
+                placeholder="Enter your email address"
+              />
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="registerPassword">
+                  <i class="fas fa-lock"></i>
+                  Password
+                </label>
+                <div class="password-input">
+                  <input
+                    type="password"
+                    id="registerPassword"
+                    name="password"
+                    required
+                    placeholder="Create a strong password"
+                    minlength="6"
+                  />
+                  <button
+                    type="button"
+                    class="password-toggle"
+                    onclick="togglePassword('registerPassword')"
+                  >
+                    <i class="fas fa-eye"></i>
+                  </button>
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="registerConfirmPassword">
+                  <i class="fas fa-lock"></i>
+                  Confirm Password
+                </label>
+                <div class="password-input">
+                  <input
+                    type="password"
+                    id="registerConfirmPassword"
+                    name="confirm_password"
+                    required
+                    placeholder="Confirm your password"
+                    minlength="6"
+                  />
+                  <button
+                    type="button"
+                    class="password-toggle"
+                    onclick="togglePassword('registerConfirmPassword')"
+                  >
+                    <i class="fas fa-eye"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="registerPhone">
+                <i class="fas fa-phone"></i>
+                Phone Number (Optional)
+              </label>
+              <input
+                type="tel"
+                id="registerPhone"
+                name="phone"
+                placeholder="+91 9876543210"
+              />
+            </div>
+
+            <!-- Travel Preferences Section -->
+            <div class="preferences-section">
+              <h3>
+                <i class="fas fa-cog"></i>
+                Travel Preferences
+              </h3>
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="preferredTransport">Preferred Transport</label>
+                  <select id="preferredTransport" name="preferred_transport">
+                    <option value="both">Both Train & Bus</option>
+                    <option value="train">Train</option>
+                    <option value="bus">Bus</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label for="maxBudget">Max Budget (₹)</label>
+                  <select id="maxBudget" name="max_budget">
+                    <option value="1000">Under ₹1,000</option>
+                    <option value="2000">Under ₹2,000</option>
+                    <option value="5000">Under ₹5,000</option>
+                    <option value="10000">Above ₹5,000</option>
+                  </select>
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="preferredTime">Preferred Travel Time</label>
+                  <select id="preferredTime" name="preferred_time">
+                    <option value="any">Any Time</option>
+                    <option value="morning">Morning (6 AM - 12 PM)</option>
+                    <option value="afternoon">Afternoon (12 PM - 6 PM)</option>
+                    <option value="evening">Evening (6 PM - 12 AM)</option>
+                    <option value="night">Night (12 AM - 6 AM)</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label for="preferredLanguage">Preferred Language</label>
+                  <select id="preferredLanguage" name="language">
+                    <option value="en-US">English</option>
+                    <option value="hi-IN">Hindi</option>
+                    <option value="mr-IN">Marathi</option>
+                    <option value="ta-IN">Tamil</option>
+                    <option value="te-IN">Telugu</option>
+                    <option value="kn-IN">Kannada</option>
+                    <option value="gu-IN">Gujarati</option>
+                    <option value="bn-IN">Bengali</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-group checkbox-group">
+              <label class="checkbox-label">
+                <input
+                  type="checkbox"
+                  id="agreeTerms"
+                  name="agree_terms"
+                  required
+                />
+                <span class="checkmark"></span>
+                I agree to the
+                <a href="#" class="terms-link">Terms of Service</a> and
+                <a href="#" class="terms-link">Privacy Policy</a>
+              </label>
+            </div>
+
+            <div class="form-group checkbox-group">
+              <label class="checkbox-label">
+                <input
+                  type="checkbox"
+                  id="receiveUpdates"
+                  name="receive_updates"
+                />
+                <span class="checkmark"></span>
+                Send me updates about new routes and travel deals
+              </label>
+            </div>
+
+            <button type="submit" class="auth-submit-btn">
+              <i class="fas fa-user-plus"></i>
+              Create Account
+            </button>
+          </form>
+          <div class="auth-footer">
+            <p>
+              Already have an account?
+              <button class="auth-switch-btn" onclick="switchAuthMode('login')">
+                Sign In
+              </button>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Success Message Modal -->
+    <div class="success-modal" id="successModal" style="display: none">
+      <div class="success-modal-overlay"></div>
+      <div class="success-modal-container glass-morphism">
+        <div class="success-icon">
+          <i class="fas fa-check-circle"></i>
+        </div>
+        <h2 id="successTitle">Welcome to VoiceRoute!</h2>
+        <p id="successMessage">
+          Your account has been created successfully. You can now access
+          personalized travel recommendations.
+        </p>
+        <button class="success-close-btn" onclick="closeSuccessModal()">
+          Continue
+        </button>
+      </div>
+    </div>
+
+    <!-- Loading Spinner -->
+    <div class="loading-spinner" id="loadingSpinner" style="display: none">
+      <div class="spinner-overlay"></div>
+      <div class="spinner-container">
+        <div class="spinner"></div>
+        <p>Processing your request...</p>
+      </div>
+    </div>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero">
+      <div class="container">
+        <div class="hero-content">
+          <div class="hero-text">
+            <h1 class="hero-title">
+              Your Voice, Your Journey
+              <span class="gradient-text">Simplified</span>
+            </h1>
+            <p class="hero-description">
+              Discover bus and train routes instantly with our AI-powered voice
+              assistant. Just speak your destination, and we'll handle the rest
+              with real-time data and personalized recommendations.
+            </p>
+            <div class="hero-actions">
+              <button class="voice-btn" id="voiceBtn">
+                <div class="voice-icon">
+                  <i class="fas fa-microphone"></i>
+                </div>
+                <span>Start Speaking</span>
+                <div class="voice-ripple"></div>
+              </button>
+              <button class="secondary-btn" onclick="scrollToSection('about')">
+                Learn More
+              </button>
+            </div>
+            <div class="hero-stats">
+              <div class="stat-item">
+                <span class="stat-number" id="userCount">1000+</span>
+                <span class="stat-label">Happy Users</span>
+              </div>
+              <div class="stat-item">
+                <span class="stat-number" id="routeCount">500+</span>
+                <span class="stat-label">Routes Available</span>
+              </div>
+              <div class="stat-item">
+                <span class="stat-number" id="cityCount">100+</span>
+                <span class="stat-label">Cities Connected</span>
+              </div>
+            </div>
+          </div>
+          <div class="hero-visual">
+            <div class="voice-visualizer glass-morphism">
+              <div class="voice-bars">
+                <div class="bar"></div>
+                <div class="bar"></div>
+                <div class="bar"></div>
+                <div class="bar"></div>
+                <div class="bar"></div>
+              </div>
+              <div class="listening-status">
+                <span>Ready to listen...</span>
+              </div>
+            </div>
+
+            <!-- User Profile Card (shown when logged in) -->
+            <div
+              class="user-profile-card glass-morphism"
+              id="userProfileCard"
+              style="display: none"
+            >
+              <div class="profile-avatar">
+                <i class="fas fa-user-circle"></i>
+              </div>
+              <div class="profile-info">
+                <h3 id="userFullName">Welcome User</h3>
+                <p id="userEmail">user@example.com</p>
+                <div class="profile-stats">
+                  <span
+                    ><i class="fas fa-search"></i>
+                    <span id="userSearchCount">0</span> searches</span
+                  >
+                  <span
+                    ><i class="fas fa-heart"></i>
+                    <span id="userFavoritesCount">0</span> favorites</span
+                  >
+                </div>
+              </div>
+              <button class="profile-logout-btn" onclick="logout()">
+                <i class="fas fa-sign-out-alt"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- About Company Section -->
+    <section id="about" class="about">
+      <div class="container">
+        <div class="section-header">
+          <h2 class="section-title">About VoiceRoute</h2>
+          <p class="section-subtitle">
+            Revolutionizing transportation discovery through voice technology
+          </p>
+        </div>
+        <div class="about-grid">
+          <div class="about-card glass-morphism">
+            <div class="card-icon">
+              <i class="fas fa-brain"></i>
+            </div>
+            <h3>AI-Powered Intelligence</h3>
+            <p>
+              Our advanced natural language processing understands your travel
+              needs and provides personalized route recommendations.
+            </p>
+          </div>
+          <div class="about-card glass-morphism">
+            <div class="card-icon">
+              <i class="fas fa-clock"></i>
+            </div>
+            <h3>Real-Time Data</h3>
+            <p>
+              Get live updates on bus and train schedules, delays, and
+              availability through integrated APIs from major transport
+              services.
+            </p>
+          </div>
+          <div class="about-card glass-morphism">
+            <div class="card-icon">
+              <i class="fas fa-users"></i>
+            </div>
+            <h3>User-Centric Design</h3>
+            <p>
+              Built with accessibility in mind, supporting multiple languages
+              and providing voice-first interaction for seamless experience.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Services Section -->
+    <section id="services" class="services">
+      <div class="container">
+        <div class="section-header">
+          <h2 class="section-title">Our Services</h2>
+          <p class="section-subtitle">
+            Comprehensive transportation solutions at your voice command
+          </p>
+        </div>
+        <div class="services-grid">
+          <div class="service-card glass-morphism">
+            <div class="service-icon">
+              <i class="fas fa-train"></i>
+            </div>
+            <h3>Train Route Discovery</h3>
+            <p>
+              Find train schedules, availability, and book tickets across
+              India's extensive railway network with voice commands.
+            </p>
+            <div class="service-features">
+              <span class="feature-tag">Live Tracking</span>
+              <span class="feature-tag">Seat Availability</span>
+              <span class="feature-tag">Price Comparison</span>
+            </div>
+          </div>
+          <div class="service-card glass-morphism">
+            <div class="service-icon">
+              <i class="fas fa-bus"></i>
+            </div>
+            <h3>Bus Route Planning</h3>
+            <p>
+              Discover local and intercity bus routes with real-time schedules
+              and GPS tracking for accurate arrival times.
+            </p>
+            <div class="service-features">
+              <span class="feature-tag">Live GPS</span>
+              <span class="feature-tag">Multiple Operators</span>
+              <span class="feature-tag">Route Optimization</span>
+            </div>
+          </div>
+          <div class="service-card glass-morphism">
+            <div class="service-icon">
+              <i class="fas fa-route"></i>
+            </div>
+            <h3>Multi-Modal Journey</h3>
+            <p>
+              Plan complex journeys combining trains, buses, and walking routes
+              for the most efficient travel experience.
+            </p>
+            <div class="service-features">
+              <span class="feature-tag">Smart Connections</span>
+              <span class="feature-tag">Time Optimization</span>
+              <span class="feature-tag">Cost Effective</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features">
+      <div class="container">
+        <div class="features-content">
+          <div class="features-text">
+            <h2>Why Choose VoiceRoute?</h2>
+            <div class="feature-list">
+              <div class="feature-item">
+                <i class="fas fa-check-circle"></i>
+                <div>
+                  <h4>Voice-First Experience</h4>
+                  <p>Natural conversation flow with hands-free operation</p>
+                </div>
+              </div>
+              <div class="feature-item">
+                <i class="fas fa-check-circle"></i>
+                <div>
+                  <h4>Personalized Recommendations</h4>
+                  <p>Learn from your travel patterns for smarter suggestions</p>
+                </div>
+              </div>
+              <div class="feature-item">
+                <i class="fas fa-check-circle"></i>
+                <div>
+                  <h4>Offline Capabilities</h4>
+                  <p>Access cached routes and favorites without internet</p>
+                </div>
+              </div>
+              <div class="feature-item">
+                <i class="fas fa-check-circle"></i>
+                <div>
+                  <h4>Multi-Language Support</h4>
+                  <p>Communicate in your preferred regional language</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="features-visual glass-morphism">
+            <div class="demo-screen">
+              <div class="demo-header">
+                <span class="demo-title">Live Demo</span>
+                <div class="demo-status">
+                  <div class="status-dot"></div>
+                  <span>Active</span>
+                </div>
+              </div>
+              <div class="demo-chat">
+                <div class="chat-message user">
+                  <span>"Find trains from Delhi to Mumbai tomorrow"</span>
+                </div>
+                <div class="chat-message bot">
+                  <span
+                    >Found 12 trains for tomorrow. Rajdhani Express departs
+                    16:55, arrives 08:35+1. Shall I check availability?</span
+                  >
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta">
+      <div class="container">
+        <div class="cta-content glass-morphism">
+          <h2>Ready to Transform Your Travel Experience?</h2>
+          <p>
+            Join thousands of users who have simplified their journey planning
+            with VoiceRoute
+          </p>
+          <div class="cta-actions">
+            <button class="primary-btn" onclick="openAuthModal('register')">
+              Try VoiceRoute Free
+            </button>
+            <button class="outline-btn" onclick="scrollToSection('services')">
+              Watch Demo
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer glass-morphism">
+      <div class="container">
+        <div class="footer-content">
+          <div class="footer-brand">
+            <div class="brand">
+              <i class="fas fa-microphone-alt brand-icon"></i>
+              <span class="brand-text">VoiceRoute</span>
+            </div>
+            <p>
+              Revolutionizing transportation discovery through intelligent voice
+              technology and real-time data integration.
+            </p>
+            <div class="social-links">
+              <a href="#"><i class="fab fa-twitter"></i></a>
+              <a href="#"><i class="fab fa-linkedin"></i></a>
+              <a href="#"><i class="fab fa-github"></i></a>
+              <a href="#"><i class="fab fa-instagram"></i></a>
+            </div>
+          </div>
+          <div class="footer-links">
+            <div class="footer-section">
+              <h4>Product</h4>
+              <a href="#">Features</a>
+              <a href="#">API Documentation</a>
+              <a href="#">Pricing</a>
+              <a href="#">Integrations</a>
+            </div>
+            <div class="footer-section">
+              <h4>Company</h4>
+              <a href="#">About Us</a>
+              <a href="#">Careers</a>
+              <a href="#">Blog</a>
+              <a href="#">Press</a>
+            </div>
+            <div class="footer-section">
+              <h4>Support</h4>
+              <a href="#">Help Center</a>
+              <a href="#">Contact</a>
+              <a href="#">Privacy Policy</a>
+              <a href="#">Terms of Service</a>
+            </div>
+          </div>
+        </div>
+        <div class="footer-bottom">
+          <p>
+            &copy; 2025 VoiceRoute. All rights reserved. Built with ❤️ for
+            seamless travel.
+          </p>
+        </div>
+      </div>
+    </footer>
+
+
+
+    <div class="voice-chat-modal" id="voiceChatModal" style="display: none;">
+        <div class="voice-chat-overlay" onclick="closeVoiceChat()"></div>
+        <div class="voice-chat-container glass-morphism">
+            <div class="voice-chat-header">
+                <div class="voice-chat-title">
+                    <i class="fas fa-microphone"></i>
+                    <h2>VoiceRoute Assistant</h2>
+                    <span class="voice-status-indicator" id="voiceStatusIndicator">Ready</span>
+                </div>
+                <div class="voice-chat-controls">
+                    <button class="voice-setting-btn" onclick="toggleVoiceSettings()">
+                        <i class="fas fa-cog"></i>
+                    </button>
+                    <button class="voice-clear-btn" onclick="clearVoiceHistory()">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                    <button class="voice-close-btn" onclick="closeVoiceChat()">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Voice Settings Panel -->
+            <div class="voice-settings-panel" id="voiceSettingsPanel" style="display: none;">
+                <div class="voice-settings-content">
+                    <div class="setting-group">
+                        <label>Language:</label>
+                        <select id="voiceLanguage">
+                            <option value="en-US">English (US)</option>
+                            <option value="en-IN">English (India)</option>
+                            <option value="hi-IN">Hindi</option>
+                            <option value="mr-IN">Marathi</option>
+                            <option value="ta-IN">Tamil</option>
+                            <option value="te-IN">Telugu</option>
+                        </select>
+                    </div>
+                    <div class="setting-group">
+                        <label>Voice Speed:</label>
+                        <input type="range" id="voiceSpeed" min="0.5" max="2" value="1" step="0.1">
+                        <span id="voiceSpeedValue">1.0x</span>
+                    </div>
+                    <div class="setting-group">
+                        <label>Auto-listen:</label>
+                        <input type="checkbox" id="autoListen">
+                        <span>Automatically start listening after response</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Chat History Container -->
+            <div class="voice-chat-history" id="voiceChatHistory">
+                <div class="chat-welcome">
+                    <div class="welcome-icon">
+                        <i class="fas fa-robot"></i>
+                    </div>
+                    <h3>Welcome to VoiceRoute Assistant!</h3>
+                    <p>I can help you find trains and buses across India. Try saying:</p>
+                    <div class="example-queries">
+                        <span class="example-query">"Find trains from Delhi to Mumbai"</span>
+                        <span class="example-query">"Show buses to Bangalore tomorrow"</span>
+                        <span class="example-query">"What's the fastest route to Pune?"</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Voice Input Area -->
+            <div class="voice-input-area">
+                <div class="voice-animation-container">
+                    <div class="voice-circle" id="voiceCircle"></div>
+                    <div class="voice-bars" id="voiceBars">
+                        <div class="voice-bar"></div>
+                        <div class="voice-bar"></div>
+                        <div class="voice-bar"></div>
+                        <div class="voice-bar"></div>
+                        <div class="voice-bar"></div>
+                        <div class="voice-bar"></div>
+                        <div class="voice-bar"></div>
+                    </div>
+                </div>
+                
+                <div class="voice-controls">
+                    <button class="voice-main-btn" id="voiceMainBtn" onclick="toggleVoiceRecognition()">
+                        <i class="fas fa-microphone" id="voiceMainIcon"></i>
+                        <span id="voiceMainText">Start Speaking</span>
+                    </button>
+                    
+                    <div class="voice-actions">
+                        <button class="voice-action-btn" onclick="sendTextMessage()">
+                            <i class="fas fa-keyboard"></i>
+                        </button>
+                        <button class="voice-action-btn" onclick="playLastResponse()">
+                            <i class="fas fa-volume-up"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="voice-status-text" id="voiceStatusText">
+                    Click the microphone button and start speaking...
+                </div>
+            </div>
+
+            <!-- Text Input (for manual typing) -->
+            <div class="text-input-area" id="textInputArea" style="display: none;">
+                <input type="text" id="textInput" placeholder="Type your message..." onkeypress="handleTextInputKeypress(event)">
+                <button onclick="sendTextMessage()">
+                    <i class="fas fa-paper-plane"></i>
+                </button>
+                <button onclick="hideTextInput()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>
